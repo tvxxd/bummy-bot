@@ -21,7 +21,7 @@ Discord bot built with Node.js for practice and learning purposes.
     - **WEBHOOK_ID** - For webhooks, not required unless you want to use the webhook command.
     - **WEBHOOK_TOKEN** - The token for your webhook client.
       
-4) Run `npm run start` or
+4) Run `npm run start`
 
 ## NOTE
 Configure your IDs!
