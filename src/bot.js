@@ -27,7 +27,7 @@ client.once(Events.ClientReady, (c) => {
 });
 
 //response
-client.on(Events.MessageCreate, (message) => {
+client.on(Events.MessageCreate, async (message) => {
   if (message.author.bot) return;
   if (message.content.startsWith(PREFIX)) {
     const [cmdname, ...arg] = message.content
@@ -46,18 +46,13 @@ client.on(Events.MessageCreate, (message) => {
       if (arg.length === 0) {
         return message.reply("provide ID");
       }
-      // member ID
-      const member = message.guild.members.cache.get(arg[0]);
       // kick execution
-      if (member) {
-        member
-          .kick()
-          .then((member) => message.reply(`${member} Kicked`))
-          .catch((err) => {
-            message.reply("No permission");
-          });
-      } else {
-        message.reply("Member not found");
+      try {
+          // member ID
+        const member = await message.guild.members.kick(arg[0]);
+        message.reply("User was kicked")
+      } catch (error) {
+        message.reply("No permission, or the user was not found")
       }
     }
   }
