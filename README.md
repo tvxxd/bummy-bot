@@ -5,7 +5,7 @@ Discord bot built with Node.js for practice and learning purposes.
 ## Features
 
 - **Response:** The bot can respond to specific commands or keywords.
-- **Moderation:** It can kick users from the server.
+- **Moderation:** It can kick and ban users from the server.
 
 ## Installation
 

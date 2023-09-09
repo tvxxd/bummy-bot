@@ -27,7 +27,7 @@ client.once(Events.ClientReady, (c) => {
 });
 
 //response
-client.on(Events.MessageCreate, async (message) => {
+client.on(Events.MessageCreate, (message) => {
   if (message.author.bot) return;
   if (message.content.startsWith(PREFIX)) {
     const [cmdname, ...arg] = message.content
@@ -35,25 +35,47 @@ client.on(Events.MessageCreate, async (message) => {
       .substring(PREFIX.length)
       .split(/\s+/);
 
-    // kick command $kick ID
-    if (cmdname === "kick") {
-      // checks if the member has kick permission
-      if (
-        !message.member.permissions.has(PermissionsBitField.Flags.KickMembers)
-      ) {
+    // checks if the user has permission to use a command
+    function checkPermission(permissionFlag, toBeDoneFunction) {
+      if (!message.member.permissions.has(permissionFlag)) {
         return message.reply("You do not have permission");
       }
       if (arg.length === 0) {
         return message.reply("provide ID");
       }
-      // kick execution
+      return toBeDoneFunction();
+    }
+
+    // kick a member
+    async function kickMember() {
       try {
-          // member ID
-        const member = await message.guild.members.kick(arg[0]);
+        const user = await message.guild.members.kick(arg[0]);
         message.reply("User was kicked")
       } catch (error) {
         message.reply("No permission, or the user was not found")
       }
+    }
+
+    // ban a member
+    async function banMember() {
+      try {
+        const user = await message.guild.members.ban(arg[0]);
+        message.reply("User was banned")
+      } catch (error) {
+        message.reply("No permission, or the user was not found")
+      }
+    }
+
+    if (cmdname === "kick") {
+      checkPermission(
+        PermissionsBitField.Flags.KickMembers,
+        kickMember
+      );
+    } else if (cmdname === "ban") {
+      checkPermission(
+        PermissionsBitField.Flags.BanMembers,
+        banMember
+      );
     }
   }
 });
